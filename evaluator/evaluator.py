@@ -12,6 +12,8 @@ from nltk.metrics.distance import edit_distance
 import numpy as np
 from tqdm import tqdm
 import time
+from loguru import logger
+
 def evaluate(groundtruth, parsedresult):
     """ Evaluation function to benchmark log parsing accuracy
     
@@ -34,7 +36,7 @@ def evaluate(groundtruth, parsedresult):
     df_groundtruth = df_groundtruth.loc[non_empty_log_ids]
     df_parsedlog = df_parsedlog.loc[non_empty_log_ids]
     (precision, recall, f_measure, accuracy) = get_accuracy(df_groundtruth['EventId'], df_parsedlog['EventId'])
-    print('Precision: %.4f, Recall: %.4f, F1_measure: %.4f, Parsing_Accuracy: %.4f'%(precision, recall, f_measure, accuracy))
+    logger.info('Precision: %.4f, Recall: %.4f, F1_measure: %.4f, Parsing_Accuracy: %.4f'%(precision, recall, f_measure, accuracy))
     return f_measure, accuracy
 
 def get_accuracy(series_groundtruth, series_parsedlog, debug=False):
@@ -81,7 +83,7 @@ def get_accuracy(series_groundtruth, series_parsedlog, debug=False):
                 accurate_events += logIds.size
                 error = False
         if error and debug:
-            print('(parsed_eventId, groundtruth_eventId) =', error_eventIds, 'failed', logIds.size, 'messages')
+            logger.info('(parsed_eventId, groundtruth_eventId) =', error_eventIds, 'failed', logIds.size, 'messages')
         for count in series_groundtruth_logId_valuecounts:
             if count > 1:
                 accurate_pairs += scipy.special.comb(count, 2)

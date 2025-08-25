@@ -3,6 +3,7 @@ from collections import Counter
 import os
 import pandas as pd
 import re
+from loguru import logger
 
 RED = "\033[31m"
 RESET = "\033[0m"
@@ -319,13 +320,13 @@ def parse(sentences,filter,dataset,threshold,delimiter,starttime,efficiency,df_i
         template_set.update(output_result(parse_result))
     '''
     ### code for root node selection evaluation.
-    print(
+    logger.info(
         "correct choose root noed ratio ==" + str(correct_choose / loglines) + "===detail===correct_choose:" + str(
             correct_choose) + " logline:" + str(loglines))
     '''
     endtime=datetime.datetime.now()
-    print("Parsing done...")
-    print("Time taken   =   " +PINK+ str(endtime-starttime)+RESET)
+    logger.info("Parsing done...")
+    logger.info("Time taken   =   " +PINK+ str(endtime-starttime)+RESET)
     if efficiency==True:
         return endtime
     '''
@@ -351,7 +352,7 @@ def parse(sentences,filter,dataset,threshold,delimiter,starttime,efficiency,df_i
 
 
 def save_result(dataset,df_output,template_set):
-    df_output.to_csv('Parseresult/' + dataset + 'result.csv', index=False)
+    df_output.to_csv('Parseresult/' + dataset + '_result.csv', index=False)
     with open('Parseresult/' + dataset + '_template.csv', 'w') as f:
         for k1 in template_set.keys():
             f.write(' '.join(list(k1)))

@@ -2,6 +2,7 @@ import datetime
 from Brain import Brain
 import pandas as pd
 from evaluator import evaluator
+from loguru import logger
 
 BLUE = "\033[34m"
 RESET = "\033[0m"
@@ -149,7 +150,7 @@ benchmark_settings = {
 benchmark_result=[]
 
 for dataset, setting in benchmark_settings.items():
-    print(BLUE+dataset+RESET)
+    logger.info(BLUE+dataset+RESET)
     starttime = datetime.datetime.now()
     parse = Brain.format_log(
         log_format=setting['log_format'],
@@ -166,13 +167,13 @@ for dataset, setting in benchmark_settings.items():
     GA= evaluator.get_GA(df_groundtruth, df_output)
     ED,ED_= evaluator.get_editdistance(df_groundtruth, df_output)
     benchmark_result.append([dataset, GA, f_measure,ED])
-print('\n=== Overall evaluation results ===')
+logger.info('\n=== Overall evaluation results ===')
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_colwidth', None)
 df_result = pd.DataFrame(benchmark_result, columns=['Dataset',  'Group_accuracy', 'F1_score','Edit_distance'])
 df_result.set_index('Dataset', inplace=True)
-print(GREEN)
-print(df_result)
-print(RESET)
-print("Average Group_accuracy= "+YELLOW+str(sum(df_result['Group_accuracy'])/len(df_result['Group_accuracy']))+RESET+ \
+logger.info(GREEN)
+logger.info(df_result)
+logger.info(RESET)
+logger.info("Average Group_accuracy= "+YELLOW+str(sum(df_result['Group_accuracy'])/len(df_result['Group_accuracy']))+RESET+ \
 "   Average Edit_distance (without data clean) = "+YELLOW+str(sum(df_result['Edit_distance'])/len(df_result['Edit_distance']))+RESET)
